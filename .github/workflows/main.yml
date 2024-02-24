@@ -1,0 +1,45 @@
+name: Spring Boot CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
+
+    - name: Print JAVA_HOME
+      run: echo "JAVA_HOME=${JAVA_HOME}"
+
+    - name: Print a message
+      run: echo "Hello, GitHub Actions!"
+      
+    - name: Grant execute permission for gradlew
+      run: |
+        echo "Before chmod on wrapper"
+        chmod +x ./gradlew
+        echo "After chmod on wrapper"
+
+    - name: Build with Gradle
+      run: |
+        echo "Starting the build process...."
+        ./gradlew build
+        echo "Build process completed."
+
+    # Optional: Run tests (if they are not already included in the build task)
+    - name: Test with Gradle
+      run: |
+        echo "Starting the testing process"
+        ./gradlew test
+        echo "Testing process done."
