@@ -3,7 +3,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
 
-const gradleCacheDir = path.join(process.env.HOME, '.gradle/caches/modules-2/files-2.1');
+const gradleCacheDir = path.join(process.env.HOME, '.gradle/caches');
 
 function hashFile(filePath) {
     return new Promise((resolve, reject) => {
