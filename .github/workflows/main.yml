@@ -37,6 +37,11 @@ jobs:
         ./gradlew --no-daemon --quiet dependencies
         echo "Dependencies downloaded."
 
+    - name: Print names of downloaded dependencies
+      run: |
+        echo "Downloaded dependencies:"
+        find ~/.gradle/caches -type f -name '*.jar' | sed 's|.*/||'
+
     - name: Build with Gradle
       run: |
         echo "Starting the build process...."
