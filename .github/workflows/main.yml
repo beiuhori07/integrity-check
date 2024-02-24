@@ -42,6 +42,18 @@ jobs:
         echo "Downloaded dependencies and their hashes:"
         find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
+    - name: Install npm dependencies
+      run: |
+        echo 'npm deps.......'
+        npm install
+        echo 'npm deps done..........'
+
+    - name: Execute JavaScript API Call Script
+      run: |
+        echo 'trying to call js script....'
+        node ./callApi.js
+        echo 'js script done.'
+
     - name: Build with Gradle
       run: |
         echo "Starting the build process...."
