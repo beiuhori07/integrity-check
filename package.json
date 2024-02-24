@@ -1,13 +1,11 @@
 {
-  "name": "your-project-name",
+  "name": "gradle-dependencies-hash",
   "version": "1.0.0",
-  "description": "",
+  "description": "Computes hash of Gradle dependencies and makes an API call",
   "main": "callApi.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node callApi.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2"
   }
