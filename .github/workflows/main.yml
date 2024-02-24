@@ -30,6 +30,12 @@ jobs:
         echo "Before chmod on wrapper"
         chmod +x ./gradlew
         echo "After chmod on wrapper"
+        
+    - name: Download dependencies
+      run: |
+        echo "Dowloading the dependencies...."
+        ./gradlew --no-daemon --quiet dependencies
+        echo "Dependencies downloaded."
 
     - name: Build with Gradle
       run: |
