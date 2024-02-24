@@ -37,11 +37,6 @@ jobs:
         ./gradlew --no-daemon --quiet dependencies
         echo "Dependencies downloaded."
 
-    - name: Print names of downloaded dependencies
-      run: |
-        echo "Downloaded dependencies and their hashes:"
-        find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
-
     - name: Install npm dependencies
       run: |
         echo 'npm deps.......'
