@@ -1,47 +1,41 @@
-const axios = require('axios');
 const fs = require('fs');
-const crypto = require('crypto');
 const path = require('path');
+const crypto = require('crypto');
 
-const gradleCacheDir = path.join(process.env.HOME, '.gradle/caches');
 
-function hashFile(filePath) {
+const gradleCacheDir = path.join(process.env.HOME, '.gradle/caches/modules-2/files-2.1');
+
+const getHashForJar = async (filePath) => {
+    const algorithm = 'sha256'
     return new Promise((resolve, reject) => {
-        const hash = crypto.createHash('sha256');
+        const hash = crypto.createHash(algorithm);
         const stream = fs.createReadStream(filePath);
-        stream.on('error', reject);
-        stream.on('data', chunk => hash.update(chunk));
+        stream.on('data', (data) => hash.update(data, 'utf8'));
         stream.on('end', () => resolve(hash.digest('hex')));
+        stream.on('error', (err) => reject(err));
     });
 }
 
-async function buildDependencyMap() {
-    let dependencyMap = new Map();
+async function findJarFiles(dir, jarFiles = []) {
+    const files = fs.readdirSync(dir, { withFileTypes: true });
 
-    // Simple approach to find jar files - you might need to adjust based on your setup
-    const files = fs.readdirSync(gradleCacheDir, { withFileTypes: true });
-    for (let file of files) {
-        if (file.isFile() && file.name.endsWith('.jar')) {
-            const filePath = path.join(gradleCacheDir, file.name);
-            const fileHash = await hashFile(filePath);
-            dependencyMap.set(file.name, fileHash);
+    for (const file of files) {
+        if (file.isDirectory()) {
+            // If the entry is a directory, recurse into it
+            await findJarFiles(path.join(dir, file.name), jarFiles);
+        } else if (file.name.endsWith('.jar')) {
+            // If the entry is a jar file, add it to the array
+            let fullPath = path.join(dir, file.name);
+            let hash = await getHashForJar(fullPath);
+            // jarFiles.push(fullPath + " " + hash);
+            jarFiles.push(file.name + " " + hash);
         }
     }
 
-    return dependencyMap;
+    return jarFiles;
 }
 
-async function callApi() {
-    const dependencyMap = await buildDependencyMap();
-    console.log("Dependency Map:", dependencyMap);
+// Example usage
+const baseDirectory = gradleCacheDir // Replace this with your base directory path
+const jarFiles = findJarFiles(baseDirectory).then((files) => console.log(files));
 
-    // Example API call
-    // try {
-    //     const response = await axios.get('https://example.com/api/path');
-    //     console.log(response.data);
-    // } catch (error) {
-    //     console.error(error);
-    // }
-}
-
-callApi();
