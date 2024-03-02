@@ -96,7 +96,7 @@ async function pipelineCheck() {
     for (const chainKey of Object.keys(chainHashes)) {
         // console.log(depHashes[chainKey])
         // console.log(chainHashes[chainKey])
-        if (depHashes[chainKey] == chainHashes[chainKey]) {
+        if (depHashes[chainKey] === chainHashes[chainKey] + "0") {
             console.log('matched')
         } else {
             console.log("diff")
