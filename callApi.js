@@ -22,10 +22,9 @@ async function findJarFiles(dir, jarFiles = []) {
 
     for (const file of files) {
         if (file.isDirectory()) {
-            // If the entry is a directory, recurse into it
             await findJarFiles(path.join(dir, file.name), jarFiles);
         } else if (file.name.endsWith('.jar')) {
-            // If the entry is a jar file, add it to the array
+
             let fullPath = path.join(dir, file.name);
             let hash = await getHashForJar(fullPath);
             // jarFiles.push(fullPath + " " + hash);
@@ -39,29 +38,21 @@ async function findJarFiles(dir, jarFiles = []) {
     return jarFiles;
 }
 
-// Example usage
-const baseDirectory = gradleCacheDir // Replace this with your base directory path
-// const jarFiles = findJarFiles(baseDirectory).then((files) => console.log(files));
+const baseDirectory = gradleCacheDir
 
 
-// Assuming you have the following information
-const contractAddress = "0xBb42ecE7629d9e9E33A97fc40dCE77f42Eb9EF9B"; // Replace with your contract's address
-const contractABI = [ // Replace with your contract's ABI
+const contractAddress = "0xBb42ecE7629d9e9E33A97fc40dCE77f42Eb9EF9B";
+const contractABI = [
     "function getAllHashes() public view returns (string[] memory, bytes32[] memory)"
 ];
 
-// Set up a provider (here, we're using Ethereum's mainnet; you might want to use a testnet or a local network for development)
-const provider = new ethers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/CI1qZNtrhzVG46OvBbJWbqRUZtFC4gMC"); // Replace with your provider
-
-// Create a contract instance
+const provider = new ethers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/CI1qZNtrhzVG46OvBbJWbqRUZtFC4gMC");
 const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
 async function fetchAllHashes() {
     try {
-        // Call the getAllHashes function
         const [keys, hashValues] = await contract.getAllHashes();
 
-        // Output the results
         // console.log("Keys:", keys);
         // console.log("HashValues:", hashValues.map(hash => hash.toString()));
 
@@ -79,13 +70,6 @@ async function fetchAllHashes() {
     }
 }
 
-// fetchAllHashes();
-
-// async function getDepHashes() {
-//     const depHashes = await findJarFiles(gradleCacheDir);
-// }
-
-
 async function pipelineCheck() {
     const chainHashes = await fetchAllHashes();
     const depHashes = await findJarFiles(gradleCacheDir);
@@ -96,7 +80,7 @@ async function pipelineCheck() {
     for (const chainKey of Object.keys(chainHashes)) {
         // console.log(depHashes[chainKey])
         // console.log(chainHashes[chainKey])
-        if (depHashes[chainKey] === chainHashes[chainKey] + "0") {
+        if (depHashes[chainKey] === chainHashes[chainKey]) {
             console.log('matched')
         } else {
             console.log("diff")
