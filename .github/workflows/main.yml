@@ -30,18 +30,6 @@ jobs:
         echo "Before chmod on wrapper"
         chmod +x ./gradlew
         echo "After chmod on wrapper"
-        
-    - name: Download dependencies
-      run: |
-        echo "Dowloading the dependencies...."
-        ./gradlew --no-daemon --quiet dependencies
-        echo "Dependencies downloaded."
-
-    - name: Install npm dependencies
-      run: |
-        echo 'npm deps.......'
-        npm install
-        echo 'npm deps done..........'
 
     - name: Make HTTP GET request with curl - to esm, for dependency check
       run: |
