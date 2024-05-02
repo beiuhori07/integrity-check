@@ -43,11 +43,23 @@ jobs:
         npm install
         echo 'npm deps done..........'
 
-    - name: Execute JavaScript API Call Script
+    - name: Make HTTP GET request with curl - to esm, for dependency check
       run: |
-        echo 'trying to call js script....'
-        node ./callApi.js
-        echo 'js script done.'
+          # Define the base URL and query parameters
+          BASE_URL=" https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
+          PARAMS=""
+
+          # Make the GET request
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
+
+          # Check if the response is a 4xx or 5xx status code
+          if [[ ${RESPONSE} -ge 400 ]]; then
+            echo "HTTP error occurred: ${RESPONSE}"
+            cat response.json
+            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+          fi
+
+          echo "Success: ${RESPONSE}"
 
     - name: Build with Gradle
       run: |
