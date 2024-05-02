@@ -45,10 +45,14 @@ jobs:
 
     - name: Make HTTP GET request with curl - to esm, for dependency check
       run: |
-          BASE_URL=" https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
+          echo 'starting curl'
+          BASE_URL="https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
           PARAMS=""
 
+          echo 'before actual curl'
           RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
+          echo 'after actual curl'
+
 
           if [[ ${RESPONSE} -ge 400 ]]; then
             echo "HTTP error occurred: ${RESPONSE}"
