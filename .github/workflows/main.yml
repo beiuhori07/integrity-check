@@ -68,7 +68,7 @@ jobs:
       run: |
           echo 'entered depeloy step' 
           BASE_URL="https://5045-86-127-179-145.ngrok-free.app/deploy"
-          PARAMS="?vmType=cpu&repoUrl=https://github.com/beiuhori07/integrity-check.git&lastCommitHash=111"
+          PARAMS="?vmType=cpu&repoUrl=https://github.com/beiuhori07/integrity-check.git&lastCommitHash=222"
 
           echo 'right before curl'
           RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
