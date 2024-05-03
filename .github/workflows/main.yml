@@ -16,6 +16,7 @@ jobs:
     - name: Display Environment Variables
       run: |
           echo "Repository: $GITHUB_REPOSITORY"
+          echo "TOKEN: $GITHUB_TOKEN"
           echo "something7"
           echo "SHA: $GITHUB_SHA"
 
