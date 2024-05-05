@@ -65,13 +65,16 @@ jobs:
         echo "Downloaded dependencies and their hashes:"
         files=$(find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar')
         echo "{" > deps_hashes.json
+        echo -e "\t\"contractAddress\": \"${contractAddress}\"," >> deps_hashes.json
+        echo -e "\t{" >> deps_hashes.json
         for file in $files; do
           hash=$(sha256sum "$file" | cut -d " " -f1)
           filename=$(basename "$file")
-          echo -e "\t\"$filename\": \"$hash\"," >> deps_hashes.json
+          echo -e "\t\t\"$filename\": \"$hash\"," >> deps_hashes.json
         done
         # Remove the last comma and close the JSON array
         sed -i '$ s/,$//' deps_hashes.json
+        echo -e "\t}" >> deps_hashes.json
         echo "}" >> deps_hashes.json
 
     - name: Print names of downloaded dependencies after deps and save in JSON format
