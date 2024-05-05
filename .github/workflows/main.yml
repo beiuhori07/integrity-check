@@ -38,10 +38,10 @@ jobs:
         chmod +x ./gradlew
         echo "After chmod on wrapper"
 
-    # - name: Print names of downloaded dependencies before deps
-    #   run: |
-    #     echo "Downloaded dependencies and their hashes:"
-    #     find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
+    - name: Print names of downloaded dependencies before deps
+      run: |
+        echo "Downloaded dependencies and their hashes:"
+        find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
 
     - name: Download dependencies
