@@ -54,7 +54,7 @@ jobs:
     - name: Print names of downloaded dependencies after deps
       run: |
         echo "Downloaded dependencies and their hashes:"
-        find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file")"; done' sh {} +
+        find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file")"; done' sh {} +
 
 
 
