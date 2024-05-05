@@ -69,7 +69,7 @@ jobs:
           hash=$(sha256sum "$file" | cut -d " " -f1)
           filename=$(basename "$file")
           jq -n --arg fn "$filename" --arg hs "$hash" \
-              '{($fn): $hs}' >> deps_hashes.json
+              '($fn): $hs' >> deps_hashes.json
           echo "," >> deps_hashes.json
         done
         # Remove the last comma and close the JSON array
