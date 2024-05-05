@@ -68,10 +68,10 @@ jobs:
         for file in $files; do
           hash=$(sha256sum "$file" | cut -d " " -f1)
           filename=$(basename "$file")
-          echo "\t\"$filename\": \"$hash\"," >> deps_hashes.json
+          echo -e "\t\"$filename\": \"$hash\"," >> deps_hashes.json
         done
         # Remove the last comma and close the JSON array
-        sed '$d' deps_hashes.json > temp.json && mv temp.json deps_hashes.json
+        sed -i '$ s/,$//' deps_hashes.json
         echo "}" >> deps_hashes.json
 
     - name: Print names of downloaded dependencies after deps and save in JSON format
