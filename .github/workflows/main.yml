@@ -15,7 +15,7 @@ jobs:
       run: |
           echo "Repository: $GITHUB_REPOSITORY"
           echo "TOKEN: ${{ secrets.GITHUB_TOKEN }}"
-          echo "something20"
+          echo "something21"
           echo "SHA: $GITHUB_SHA"
 
     - name: Install jq
