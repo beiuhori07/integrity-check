@@ -78,24 +78,24 @@ jobs:
       run: |
         cat deps_hashes.json
 
-    # - name: Make HTTP GET request with curl - to esm, for dependency check
-    #   run: |
-    #       echo 'starting curl'
-    #       BASE_URL="https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
-    #       PARAMS=""
+    - name: Make HTTP GET request with curl - to esm, for dependency check
+      run: |
+          echo 'starting curl'
+          BASE_URL="https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
+          PARAMS=""
 
-    #       echo 'before actual curl'
-    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
-    #       echo 'after actual curl'
+          echo 'before actual curl'
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X POST -H "Content-Type: application/json" -d @deps_hashes.json "${BASE_URL}${PARAMS}")
+          echo 'after actual curl'
 
 
-    #       if [[ ${RESPONSE} -ge 400 ]]; then
-    #         echo "HTTP error occurred: ${RESPONSE}"
-    #         cat response.json
-    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-    #       fi
+          if [[ ${RESPONSE} -ge 400 ]]; then
+            echo "HTTP error occurred: ${RESPONSE}"
+            cat response.json
+            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+          fi
 
-    #       echo "Success: ${RESPONSE}"
+          echo "Success: ${RESPONSE}"
 
     # - name: Build with Gradle
     #   run: |
