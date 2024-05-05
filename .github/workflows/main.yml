@@ -8,8 +8,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+
     steps:
     - uses: actions/checkout@v2
+
 
     - name: Display Environment Variables
       run: |
@@ -18,27 +20,28 @@ jobs:
           echo "something22"
           echo "SHA: $GITHUB_SHA"
 
+
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
+
 
     - name: Extract values from JSON
       run: |
           echo "vmType=$(jq -r '.vmType' config.json)" >> $GITHUB_ENV
           echo "contractAddress=$(jq -r '.contractAddress' config.json)" >> $GITHUB_ENV
 
+
     - name: Use the JSON values
       run: |
           echo "Using vmType: $vmType"
           echo "Using contractAddress: $contractAddress"
+
 
     - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
         java-version: '17'
         distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
-
-    - name: Print JAVA_HOME
-      run: echo "JAVA_HOME=${JAVA_HOME}"
 
    
     - name: Grant execute permission for gradlew
@@ -54,13 +57,8 @@ jobs:
         ./gradlew --no-daemon --quiet dependencies
         echo "Dependencies downloaded."
 
-        
-    - name: Print names of downloaded dependencies after deps
-      run: |
-        echo "Downloaded dependencies and their hashes:"
-        find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
-    - name: Print names of downloaded dependencies after deps and save in JSON format
+    - name: Fetch and build dependency hash map in JSON format
       run: |
         echo "Downloaded dependencies and their hashes:"
         files=$(find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar')
@@ -77,9 +75,11 @@ jobs:
         echo -e "\t}" >> deps_hashes.json
         echo "}" >> deps_hashes.json
 
-    - name: Print names of downloaded dependencies after deps and save in JSON format
+
+    - name: Print contents of dependency hash map 
       run: |
         cat deps_hashes.json
+
 
     - name: Make HTTP GET request with curl - to esm, for dependency check
       run: |
@@ -100,13 +100,14 @@ jobs:
 
           echo "Success: ${RESPONSE}"
 
+
     - name: Build with Gradle
       run: |
         echo "Starting the build process...."
-        ./gradlew build
+        ./gradlew build -x test
         echo "Build process completed."
 
-    # Optional: Run tests (if they are not already included in the build task)
+
     - name: Test with Gradle
       run: |
         echo "Starting the testing process"
@@ -118,7 +119,7 @@ jobs:
       run: |
           echo 'entered depeloy step' 
           BASE_URL="https://5045-86-127-179-145.ngrok-free.app/deploy"
-          PARAMS="?vmType=cpu&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
+          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
 
           echo 'right before curl'
           RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
