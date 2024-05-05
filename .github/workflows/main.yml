@@ -100,34 +100,34 @@ jobs:
 
           echo "Success: ${RESPONSE}"
 
-    # - name: Build with Gradle
-    #   run: |
-    #     echo "Starting the build process...."
-    #     ./gradlew build
-    #     echo "Build process completed."
+    - name: Build with Gradle
+      run: |
+        echo "Starting the build process...."
+        ./gradlew build
+        echo "Build process completed."
 
-    # # Optional: Run tests (if they are not already included in the build task)
-    # - name: Test with Gradle
-    #   run: |
-    #     echo "Starting the testing process"
-    #     ./gradlew test
-    #     echo "Testing process done."
+    # Optional: Run tests (if they are not already included in the build task)
+    - name: Test with Gradle
+      run: |
+        echo "Starting the testing process"
+        ./gradlew test
+        echo "Testing process done."
 
 
-    # - name: Make HTTP GET request with curl - to esm, for deployment
-    #   run: |
-    #       echo 'entered depeloy step' 
-    #       BASE_URL="https://5045-86-127-179-145.ngrok-free.app/deploy"
-    #       PARAMS="?vmType=cpu&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
+    - name: Make HTTP GET request with curl - to esm, for deployment
+      run: |
+          echo 'entered depeloy step' 
+          BASE_URL="https://5045-86-127-179-145.ngrok-free.app/deploy"
+          PARAMS="?vmType=cpu&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
 
-    #       echo 'right before curl'
-    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
-    #       echo 'right after curl'
+          echo 'right before curl'
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
+          echo 'right after curl'
 
-    #       if [[ ${RESPONSE} -ge 400 ]]; then
-    #         echo "HTTP error occurred: ${RESPONSE}"
-    #         cat response.json
-    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-    #       fi
+          if [[ ${RESPONSE} -ge 400 ]]; then
+            echo "HTTP error occurred: ${RESPONSE}"
+            cat response.json
+            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+          fi
 
-    #       echo "Success: ${RESPONSE}"
+          echo "Success: ${RESPONSE}"
