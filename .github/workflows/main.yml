@@ -60,7 +60,25 @@ jobs:
         echo "Downloaded dependencies and their hashes:"
         find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
+    - name: Print names of downloaded dependencies after deps and save in JSON format
+      run: |
+        echo "Downloaded dependencies and their hashes:"
+        files=$(find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar')
+        echo "{" > deps_hashes.json
+        for file in $files; do
+          hash=$(sha256sum "$file" | cut -d " " -f1)
+          filename=$(basename "$file")
+          jq -n --arg fn "$filename" --arg hs "$hash" \
+              '{($fn): $hs}' >> deps_hashes.json
+          echo "," >> deps_hashes.json
+        done
+        # Remove the last comma and close the JSON array
+        sed '$d' deps_hashes.json > temp.json && mv temp.json deps_hashes.json
+        echo "}" >> deps_hashes.json
 
+    - name: Print names of downloaded dependencies after deps and save in JSON format
+      run: |
+        cat deps_hashes.json
 
     # - name: Make HTTP GET request with curl - to esm, for dependency check
     #   run: |
