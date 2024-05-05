@@ -38,53 +38,73 @@ jobs:
         chmod +x ./gradlew
         echo "After chmod on wrapper"
 
-    - name: Make HTTP GET request with curl - to esm, for dependency check
+    - name: Print names of downloaded dependencies before deps
       run: |
-          echo 'starting curl'
-          BASE_URL="https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
-          PARAMS=""
-
-          echo 'before actual curl'
-          RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
-          echo 'after actual curl'
+        echo "Downloaded dependencies and their hashes:"
+        find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
 
-          if [[ ${RESPONSE} -ge 400 ]]; then
-            echo "HTTP error occurred: ${RESPONSE}"
-            cat response.json
-            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-          fi
-
-          echo "Success: ${RESPONSE}"
-
-    - name: Build with Gradle
+    - name: Download dependencies
       run: |
-        echo "Starting the build process...."
-        ./gradlew build
-        echo "Build process completed."
+        echo "Dowloading the dependencies...."
+        ./gradlew --no-daemon --quiet dependencies
+        echo "Dependencies downloaded."
 
-    # Optional: Run tests (if they are not already included in the build task)
-    - name: Test with Gradle
+        
+    - name: Print names of downloaded dependencies after deps
       run: |
-        echo "Starting the testing process"
-        ./gradlew test
-        echo "Testing process done."
+        echo "Downloaded dependencies and their hashes:"
+        find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
 
-    - name: Make HTTP GET request with curl - to esm, for deployment
-      run: |
-          echo 'entered depeloy step' 
-          BASE_URL="https://5045-86-127-179-145.ngrok-free.app/deploy"
-          PARAMS="?vmType=cpu&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
 
-          echo 'right before curl'
-          RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
-          echo 'right after curl'
+    # - name: Make HTTP GET request with curl - to esm, for dependency check
+    #   run: |
+    #       echo 'starting curl'
+    #       BASE_URL="https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
+    #       PARAMS=""
 
-          if [[ ${RESPONSE} -ge 400 ]]; then
-            echo "HTTP error occurred: ${RESPONSE}"
-            cat response.json
-            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-          fi
+    #       echo 'before actual curl'
+    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
+    #       echo 'after actual curl'
 
-          echo "Success: ${RESPONSE}"
+
+    #       if [[ ${RESPONSE} -ge 400 ]]; then
+    #         echo "HTTP error occurred: ${RESPONSE}"
+    #         cat response.json
+    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+    #       fi
+
+    #       echo "Success: ${RESPONSE}"
+
+    # - name: Build with Gradle
+    #   run: |
+    #     echo "Starting the build process...."
+    #     ./gradlew build
+    #     echo "Build process completed."
+
+    # # Optional: Run tests (if they are not already included in the build task)
+    # - name: Test with Gradle
+    #   run: |
+    #     echo "Starting the testing process"
+    #     ./gradlew test
+    #     echo "Testing process done."
+
+
+    # - name: Make HTTP GET request with curl - to esm, for deployment
+    #   run: |
+    #       echo 'entered depeloy step' 
+    #       BASE_URL="https://5045-86-127-179-145.ngrok-free.app/deploy"
+    #       PARAMS="?vmType=cpu&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
+
+    #       echo 'right before curl'
+    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
+    #       echo 'right after curl'
+
+    #       if [[ ${RESPONSE} -ge 400 ]]; then
+    #         echo "HTTP error occurred: ${RESPONSE}"
+    #         cat response.json
+    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+    #       fi
+
+    #       echo "Success: ${RESPONSE}"
