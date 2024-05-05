@@ -40,19 +40,12 @@ jobs:
     - name: Print JAVA_HOME
       run: echo "JAVA_HOME=${JAVA_HOME}"
 
-    - name: Print a message
-      run: echo "Hello, GitHub Actions!"
-      
+   
     - name: Grant execute permission for gradlew
       run: |
         echo "Before chmod on wrapper"
         chmod +x ./gradlew
         echo "After chmod on wrapper"
-
-    # - name: Print names of downloaded dependencies before deps
-    #   run: |
-    #     echo "Downloaded dependencies and their hashes:"
-    #     find ~/.gradle/caches -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
 
     - name: Download dependencies
@@ -65,7 +58,7 @@ jobs:
     - name: Print names of downloaded dependencies after deps
       run: |
         echo "Downloaded dependencies and their hashes:"
-        find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file")"; done' sh {} +
+        find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar' -exec sh -c 'for file; do echo "$(basename "$file") $(sha256sum "$file" | cut -d" " -f1)"; done' sh {} +
 
 
 
