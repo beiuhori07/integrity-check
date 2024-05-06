@@ -37,11 +37,11 @@ jobs:
     #       echo "Using contractAddress: $contractAddress"
 
 
-    # - name: Set up JDK 17
-    #   uses: actions/setup-java@v2
-    #   with:
-    #     java-version: '17'
-    #     distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
 
    
     - name: Grant execute permission for gradlew
