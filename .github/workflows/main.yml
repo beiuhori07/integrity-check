@@ -120,7 +120,7 @@ jobs:
       run: |
         echo "Listing contents of the JAR file:"
         jar_file=$(ls build/libs/*-SNAPSHOT.jar)
-        xxd "$jar_file" | head
+        xxd "$jar_file"
 
 
 
