@@ -112,14 +112,14 @@ jobs:
         echo "Listing JAR content:"
         ls -lh build/libs/
         echo "Displaying file size of the JAR:"
-        jar_file=$(ls build/libs/*.jar)
+        jar_file=$(ls build/libs/*-SNAPSHOT.jar)
         du -h "$jar_file"
 
 
     - name: List contents of the JAR file
       run: |
         echo "Listing contents of the JAR file:"
-        jar_file=$(ls build/libs/*.jar)
+        jar_file=$(ls build/libs/*-SNAPSHOT.jar)
         jar tf "$jar_file"
 
 
