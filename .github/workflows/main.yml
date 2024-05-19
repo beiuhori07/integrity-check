@@ -84,7 +84,7 @@ jobs:
     - name: Make HTTP GET request with curl - to esm, for dependency check
       run: |
           echo 'starting curl'
-          BASE_URL="https://5045-86-127-179-145.ngrok-free.app/blockchain/dependency-check"
+          BASE_URL="https://432c-79-112-220-177.ngrok-free.app/blockchain/dependency-check"
           PARAMS=""
 
           echo 'before actual curl'
@@ -118,7 +118,7 @@ jobs:
     - name: Make HTTP GET request with curl - to esm, for deployment
       run: |
           echo 'entered depeloy step' 
-          BASE_URL="https://5045-86-127-179-145.ngrok-free.app/deploy"
+          BASE_URL="https://432c-79-112-220-177.ngrok-free.app/deploy"
           PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
 
           echo 'right before curl'
