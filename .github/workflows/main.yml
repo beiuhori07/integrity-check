@@ -17,7 +17,7 @@ jobs:
       run: |
           echo "Repository: $GITHUB_REPOSITORY"
           echo "TOKEN: ${{ secrets.GITHUB_TOKEN }}"
-          echo "something26"
+          echo "something27"
           echo "SHA: $GITHUB_SHA"
 
 
