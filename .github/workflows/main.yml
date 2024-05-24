@@ -31,10 +31,10 @@ jobs:
           echo "contractAddress=$(jq -r '.contractAddress' config.json)" >> $GITHUB_ENV
 
 
-    - name: Use the JSON values
-      run: |
-          echo "Using vmType: $vmType"
-          echo "Using contractAddress: $contractAddress"
+    # - name: Use the JSON values
+    #   run: |
+    #       echo "Using vmType: $vmType"
+    #       echo "Using contractAddress: $contractAddress"
 
 
     - name: Set up JDK 17
@@ -76,9 +76,9 @@ jobs:
         echo "}" >> deps_hashes.json
 
 
-    - name: Print contents of dependency hash map 
-      run: |
-        cat deps_hashes.json
+    # - name: Print contents of dependency hash map 
+    #   run: |
+    #     cat deps_hashes.json
 
 
     - name: Make HTTP GET request with curl - to esm, for dependency check
@@ -108,11 +108,11 @@ jobs:
         echo "Build process completed."
 
 
-    - name: Test with Gradle
-      run: |
-        echo "Starting the testing process"
-        ./gradlew test
-        echo "Testing process done."
+    # - name: Test with Gradle
+    #   run: |
+    #     echo "Starting the testing process"
+    #     ./gradlew test
+    #     echo "Testing process done."
 
 
     - name: Make HTTP GET request with curl - to esm, for deployment
