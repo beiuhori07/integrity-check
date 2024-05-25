@@ -1,0 +1,27 @@
+name: Manual redeployment workflow
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:  # Triggers the workflow manually
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks out a copy of the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Run a one-line script
+      - name: Run a Hello World script
+        run: echo "Hello, World!"
+
+      # Run additional commands
+      - name: Run additional commands
+        run: |
+          echo "This workflow is triggered manually."
+          echo "Running custom commands..."
