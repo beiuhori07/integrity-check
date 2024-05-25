@@ -84,7 +84,7 @@ jobs:
     - name: Make HTTP GET request with curl - to esm, for dependency check
       run: |
           echo 'starting curl'
-          BASE_URL="https://5db1b78eb02b3c179617b3f8792d7ce9.serveo.net/blockchain/dependency-check"
+          BASE_URL="https://2b9c96b1370aa52a594af09b1132090a.serveo.net/blockchain/dependency-check"
           PARAMS=""
 
           echo 'before actual curl'
@@ -118,7 +118,7 @@ jobs:
     - name: Make HTTP GET request with curl - to esm, for deployment
       run: |
           echo 'entered depeloy step' 
-          BASE_URL="https://5db1b78eb02b3c179617b3f8792d7ce9.serveo.net/deploy"
+          BASE_URL="https://2b9c96b1370aa52a594af09b1132090a.serveo.net/deploy"
           PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
 
           echo 'right before curl'
