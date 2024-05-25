@@ -13,6 +13,11 @@ public class SimpleRestController {
 
   private static final Logger logger = LoggerFactory.getLogger("ayooo");
 
+
+  @GetMapping("/health")
+  public String checkHealth() {
+    return "Service is running!";
+  }
   @GetMapping("/log-timestamp")
   public String logTimestamp() {
     org.slf4j.MDC.put("loggingSmartContractAddress", "0xac8bfeffaaa90e092a7c4709a9cda36f9cdf9e03");
