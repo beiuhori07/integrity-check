@@ -28,7 +28,7 @@ jobs:
         run: |
           echo 'entered redepeloy step' 
           BASE_URL="https://2b9c96b1370aa52a594af09b1132090a.serveo.net/redeploy"
-          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA"
+          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA&redeployment=true"
 
           echo 'right before curl'
           RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
