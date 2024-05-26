@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.slf4j:log4j-over-slf4j:1.6.4'
 	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.3.0'
+
 	testImplementation 'ch.qos.logback:logback-classic:1.5.3'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
