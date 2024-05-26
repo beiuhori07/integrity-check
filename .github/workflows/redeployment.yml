@@ -27,7 +27,7 @@ jobs:
       - name: Run additional commands
         run: |
           echo 'entered redepeloy step' 
-          BASE_URL="https://a2d299f079aea4b82f155b0436fb8486.serveo.net/redeploy"
+          BASE_URL="https://63b5e9a76ada208d08eb733c6682f603.serveo.net/redeploy"
           PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA&redeployment=true"
 
           echo 'right before curl'
