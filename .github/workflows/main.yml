@@ -20,7 +20,7 @@ jobs:
           echo "something68"
           echo "SHA: $GITHUB_SHA"
           echo "SHORT: ${{ github.sha_short }}"
-          echo "SHORT from long: ${GITHUB_SHA::7}"
+          echo "SHORT from long: ${GITHUB_SHA::10}"
 
 
     - name: Install jq
@@ -33,24 +33,24 @@ jobs:
           echo "contractAddress=$(jq -r '.contractAddress' config.json)" >> $GITHUB_ENV
 
 
-    # - name: Use the JSON values
-    #   run: |
-    #       echo "Using vmType: $vmType"
-    #       echo "Using contractAddress: $contractAddress"
+    - name: Use the JSON values
+      run: |
+          echo "Using vmType: $vmType"
+          echo "Using contractAddress: $contractAddress"
 
 
-    # - name: Set up JDK 17
-    #   uses: actions/setup-java@v2
-    #   with:
-    #     java-version: '17'
-    #     distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
 
    
-    # - name: Grant execute permission for gradlew
-    #   run: |
-    #     echo "Before chmod on wrapper"
-    #     chmod +x ./gradlew
-    #     echo "After chmod on wrapper"
+    - name: Grant execute permission for gradlew
+      run: |
+        echo "Before chmod on wrapper"
+        chmod +x ./gradlew
+        echo "After chmod on wrapper"
 
 
     # - name: Download dependencies
@@ -103,11 +103,11 @@ jobs:
     #       echo "Success: ${RESPONSE}"
 
 
-    # - name: Build with Gradle
-    #   run: |
-    #     echo "Starting the build process...."
-    #     ./gradlew build -x test
-    #     echo "Build process completed."
+    - name: Build with Gradle
+      run: |
+        echo "Starting the build process...."
+        ./gradlew build -x test
+        echo "Build process completed."
 
 
     # - name: Test with Gradle
@@ -117,20 +117,20 @@ jobs:
     #     echo "Testing process done."
 
 
-    # - name: Make HTTP GET request with curl - to esm, for deployment
-    #   run: |
-    #       echo 'entered depeloy step' 
-    #       BASE_URL="https://0c54cd5459eaaf38f1c65641b1202af9.serveo.net/deploy"
-    #       PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=$GITHUB_SHA&redeployment=false"
+    - name: Make HTTP GET request with curl - to esm, for deployment
+      run: |
+          echo 'entered depeloy step' 
+          BASE_URL="https://0c54cd5459eaaf38f1c65641b1202af9.serveo.net/deploy"
+          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false"
 
-    #       echo 'right before curl'
-    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
-    #       echo 'right after curl'
+          echo 'right before curl'
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
+          echo 'right after curl'
 
-    #       if [[ ${RESPONSE} -ge 400 ]]; then
-    #         echo "HTTP error occurred: ${RESPONSE}"
-    #         cat response.json
-    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-    #       fi
+          if [[ ${RESPONSE} -ge 400 ]]; then
+            echo "HTTP error occurred: ${RESPONSE}"
+            cat response.json
+            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+          fi
 
-    #       echo "Success: ${RESPONSE}"
+          echo "Success: ${RESPONSE}"
