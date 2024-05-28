@@ -32,6 +32,8 @@ jobs:
           echo "vmType=$(jq -r '.vmType' config.json)" >> $GITHUB_ENV
           echo "contractAddress=$(jq -r '.contractAddress' config.json)" >> $GITHUB_ENV
           echo "metricsAddress=$(jq -r '.metricsAddress' config.json)" >> $GITHUB_ENV
+          echo "port=$(jq -r '.port' config.json)" >> $GITHUB_ENV
+          
 
 
 
@@ -123,7 +125,7 @@ jobs:
       run: |
           echo 'entered depeloy step' 
           BASE_URL="https://b0d074168edbad59952ba09f14dccfcb.serveo.net/deploy"
-          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}"
+          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}&port=${port}"
 
           echo 'right before curl'
           RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
