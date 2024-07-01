@@ -124,7 +124,7 @@ jobs:
     - name: Make HTTP GET request with curl - to esm, for deployment
       run: |
           echo 'entered depeloy step' 
-          BASE_URL="https://ac447256154504.lhr.life/deploy"
+          BASE_URL="https://b03ea9c59b8068.lhr.life/deploy"
           PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}&port=${port}&geolocation=romania"
 
           echo 'right before curl'
