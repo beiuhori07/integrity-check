@@ -128,7 +128,7 @@ jobs:
       run: |
           echo 'entered depeloy step' 
           BASE_URL="$PUBLIC_URL/deploy"
-          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}&port=${port}&geolocation=romania&publicUrl=$PUBLIC_URL"
+          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}&port=${port}&geolocation=romania&publicUrl=$PUBLIC_URL&contractAddress=${contractAddress}"
 
           echo 'right before curl'
           RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
