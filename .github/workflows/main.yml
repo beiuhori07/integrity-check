@@ -124,20 +124,20 @@ jobs:
     #     echo "Testing process done."
 
 
-    # - name: Make HTTP GET request with curl - to esm, for deployment
-    #   run: |
-    #       echo 'entered depeloy step' 
-    #       BASE_URL="$PUBLIC_URL/deploy"
-    #       PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}&port=${port}&geolocation=romania&publicUrl=$PUBLIC_URL"
+    - name: Make HTTP GET request with curl - to esm, for deployment
+      run: |
+          echo 'entered depeloy step' 
+          BASE_URL="$PUBLIC_URL/deploy"
+          PARAMS="?vmType=$vmType&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}&port=${port}&geolocation=romania&publicUrl=$PUBLIC_URL"
 
-    #       echo 'right before curl'
-    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
-    #       echo 'right after curl'
+          echo 'right before curl'
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" "${BASE_URL}${PARAMS}")
+          echo 'right after curl'
 
-    #       if [[ ${RESPONSE} -ge 400 ]]; then
-    #         echo "HTTP error occurred: ${RESPONSE}"
-    #         cat response.json
-    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-    #       fi
+          if [[ ${RESPONSE} -ge 400 ]]; then
+            echo "HTTP error occurred: ${RESPONSE}"
+            cat response.json
+            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+          fi
 
-    #       echo "Success: ${RESPONSE}"
+          echo "Success: ${RESPONSE}"
