@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  PUBLIC_URL: 'https://b873b3224cee5c44f6ec83f5fd5c2ea1.serveo.net'
+  PUBLIC_URL: 'https://9e917ae4d4f4816aa339ca6e9d582b44.serveo.net'
 
 jobs:
   build:
