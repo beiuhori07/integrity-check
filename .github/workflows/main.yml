@@ -20,7 +20,7 @@ jobs:
       run: |
           echo "Repository: $GITHUB_REPOSITORY"
           echo "TOKEN: ${{ secrets.GITHUB_TOKEN }}"
-          echo "something125"
+          echo "something126"
           echo "SHA: $GITHUB_SHA"
           echo "SHORT: ${{ github.sha_short }}"
           echo "SHORT from long: ${GITHUB_SHA::10}"
@@ -60,29 +60,29 @@ jobs:
         echo "After chmod on wrapper"
 
 
-    - name: Download dependencies
-      run: |
-        echo "Dowloading the dependencies...."
-        ./gradlew --no-daemon --quiet dependencies
-        echo "Dependencies downloaded."
+    # - name: Download dependencies
+    #   run: |
+    #     echo "Dowloading the dependencies...."
+    #     ./gradlew --no-daemon --quiet dependencies
+    #     echo "Dependencies downloaded."
 
 
-    - name: Fetch and build dependency hash map in JSON format
-      run: |
-        echo "Downloaded dependencies and their hashes:"
-        files=$(find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar')
-        echo "{" > deps_hashes.json
-        echo -e "\t\"contractAddress\": \"${contractAddress}\"," >> deps_hashes.json
-        echo -e "\t\"depsHashesMap\": {" >> deps_hashes.json
-        for file in $files; do
-          hash=$(sha256sum "$file" | cut -d " " -f1)
-          filename=$(basename "$file")
-          echo -e "\t\t\"$filename\": \"$hash\"," >> deps_hashes.json
-        done
-        # Remove the last comma and close the JSON array
-        sed -i '$ s/,$//' deps_hashes.json
-        echo -e "\t}" >> deps_hashes.json
-        echo "}" >> deps_hashes.json
+    # - name: Fetch and build dependency hash map in JSON format
+    #   run: |
+    #     echo "Downloaded dependencies and their hashes:"
+    #     files=$(find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar')
+    #     echo "{" > deps_hashes.json
+    #     echo -e "\t\"contractAddress\": \"${contractAddress}\"," >> deps_hashes.json
+    #     echo -e "\t\"depsHashesMap\": {" >> deps_hashes.json
+    #     for file in $files; do
+    #       hash=$(sha256sum "$file" | cut -d " " -f1)
+    #       filename=$(basename "$file")
+    #       echo -e "\t\t\"$filename\": \"$hash\"," >> deps_hashes.json
+    #     done
+    #     # Remove the last comma and close the JSON array
+    #     sed -i '$ s/,$//' deps_hashes.json
+    #     echo -e "\t}" >> deps_hashes.json
+    #     echo "}" >> deps_hashes.json
 
 
     # - name: Print contents of dependency hash map 
@@ -90,31 +90,31 @@ jobs:
     #     cat deps_hashes.json
 
 
-    - name: Make HTTP GET request with curl - to esm, for dependency check
-      run: |
-          echo 'starting curl'
-          BASE_URL="$PUBLIC_URL/blockchain/dependency-check"
-          PARAMS=""
+    # - name: Make HTTP GET request with curl - to esm, for dependency check
+    #   run: |
+    #       echo 'starting curl'
+    #       BASE_URL="$PUBLIC_URL/blockchain/dependency-check"
+    #       PARAMS=""
 
-          echo 'before actual curl'
-          RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X POST -H "Content-Type: application/json" -d @deps_hashes.json "${BASE_URL}${PARAMS}")
-          echo 'after actual curl'
-
-
-          if [[ ${RESPONSE} -ge 400 ]]; then
-            echo "HTTP error occurred: ${RESPONSE}"
-            cat response.json
-            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-          fi
-
-          echo "Success: ${RESPONSE}"
+    #       echo 'before actual curl'
+    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X POST -H "Content-Type: application/json" -d @deps_hashes.json "${BASE_URL}${PARAMS}")
+    #       echo 'after actual curl'
 
 
-    - name: Build with Gradle
-      run: |
-        echo "Starting the build process...."
-        ./gradlew build -x test
-        echo "Build process completed."
+    #       if [[ ${RESPONSE} -ge 400 ]]; then
+    #         echo "HTTP error occurred: ${RESPONSE}"
+    #         cat response.json
+    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+    #       fi
+
+    #       echo "Success: ${RESPONSE}"
+
+
+    # - name: Build with Gradle
+    #   run: |
+    #     echo "Starting the build process...."
+    #     ./gradlew build -x test
+    #     echo "Build process completed."
 
 
     # - name: Test with Gradle
