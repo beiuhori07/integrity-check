@@ -139,7 +139,7 @@ jobs:
     - name: Make HTTP GET request with curl - to esm, for deployment
       run: |
           echo 'entered depeloy step' 
-          BASE_URL="https://7cfa7f8892f00c3f50dfe5ea14ba606f.serveo.net/deploy"
+          BASE_URL="https://f592faf0cf40a69d3c38175fcf217c8a.serveo.net/deploy"
           PARAMS="?vmType=container&repoUrl=https://github.com/$GITHUB_REPOSITORY.git&lastCommitHash=${GITHUB_SHA::10}&redeployment=false&metricsAddress=${metricsAddress}&port=${port}&geolocation=romania"
 
           echo 'right before curl'
