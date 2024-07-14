@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  PUBLIC_URL: 'https://2b934df765214b997aad8d13c6c8e5d7.serveo.net'
+  PUBLIC_URL: '104.248.140.51'
 
 jobs:
   build:
@@ -15,20 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-
-    - name: Display Environment Variables
-      run: |
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "TOKEN: ${{ secrets.GITHUB_TOKEN }}"
-          echo "something138"
-          echo "SHA: $GITHUB_SHA"
-          echo "SHORT: ${{ github.sha_short }}"
-          echo "SHORT from long: ${GITHUB_SHA::10}"
-
-
     - name: Install jq
       run: sudo apt-get update && sudo apt-get install -y jq
-
 
     - name: Extract values from JSON
       run: |
@@ -36,92 +24,67 @@ jobs:
           echo "contractAddress=$(jq -r '.contractAddress' config.json)" >> $GITHUB_ENV
           echo "metricsAddress=$(jq -r '.metricsAddress' config.json)" >> $GITHUB_ENV
           echo "port=$(jq -r '.port' config.json)" >> $GITHUB_ENV
-          
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
+
+    - name: Grant execute permission for gradlew
+      run: |
+        chmod +x ./gradlew
+
+    - name: Download dependencies
+      run: |
+        ./gradlew --no-daemon --quiet dependencies
 
 
-
-    # - name: Use the JSON values
-    #   run: |
-    #       echo "Using vmType: $vmType"
-    #       echo "Using contractAddress: $contractAddress"
-
-
-    # - name: Set up JDK 17
-    #   uses: actions/setup-java@v2
-    #   with:
-    #     java-version: '17'
-    #     distribution: 'temurin' # Temurin is the Eclipse Foundation's OpenJDK distribution
-
-   
-    # - name: Grant execute permission for gradlew
-    #   run: |
-    #     echo "Before chmod on wrapper"
-    #     chmod +x ./gradlew
-    #     echo "After chmod on wrapper"
+    - name: Fetch and build dependency hash map in JSON format
+      run: |
+        echo "Downloaded dependencies and their hashes:"
+        files=$(find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar')
+        echo "{" > deps_hashes.json
+        echo -e "\t\"contractAddress\": \"${contractAddress}\"," >> deps_hashes.json
+        echo -e "\t\"depsHashesMap\": {" >> deps_hashes.json
+        for file in $files; do
+          hash=$(sha256sum "$file" | cut -d " " -f1)
+          filename=$(basename "$file")
+          echo -e "\t\t\"$filename\": \"$hash\"," >> deps_hashes.json
+        done
+        # Remove the last comma and close the JSON array
+        sed -i '$ s/,$//' deps_hashes.json
+        echo -e "\t}" >> deps_hashes.json
+        echo "}" >> deps_hashes.json
 
 
-    # - name: Download dependencies
-    #   run: |
-    #     echo "Dowloading the dependencies...."
-    #     ./gradlew --no-daemon --quiet dependencies
-    #     echo "Dependencies downloaded."
+    - name: Make HTTP GET request with curl - to esm, for dependency check
+      run: |
+          BASE_URL="$PUBLIC_URL/blockchain/dependency-check"
+          PARAMS=""
+
+          echo 'before actual curl'
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X POST -H "Content-Type: application/json" -d @deps_hashes.json "${BASE_URL}${PARAMS}")
+          echo 'after actual curl'
 
 
-    # - name: Fetch and build dependency hash map in JSON format
-    #   run: |
-    #     echo "Downloaded dependencies and their hashes:"
-    #     files=$(find ~/.gradle/caches/modules-2/files-2.1 -type f -name '*.jar')
-    #     echo "{" > deps_hashes.json
-    #     echo -e "\t\"contractAddress\": \"${contractAddress}\"," >> deps_hashes.json
-    #     echo -e "\t\"depsHashesMap\": {" >> deps_hashes.json
-    #     for file in $files; do
-    #       hash=$(sha256sum "$file" | cut -d " " -f1)
-    #       filename=$(basename "$file")
-    #       echo -e "\t\t\"$filename\": \"$hash\"," >> deps_hashes.json
-    #     done
-    #     # Remove the last comma and close the JSON array
-    #     sed -i '$ s/,$//' deps_hashes.json
-    #     echo -e "\t}" >> deps_hashes.json
-    #     echo "}" >> deps_hashes.json
+          if [[ ${RESPONSE} -ge 400 ]]; then
+            echo "HTTP error occurred: ${RESPONSE}"
+            cat response.json
+            exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
+          fi
 
+          echo "Success: ${RESPONSE}"
 
-    # - name: Print contents of dependency hash map 
-    #   run: |
-    #     cat deps_hashes.json
+    - name: Build with Gradle
+      run: |
+        ./gradlew build -x test
 
-
-    # - name: Make HTTP GET request with curl - to esm, for dependency check
-    #   run: |
-    #       echo 'starting curl'
-    #       BASE_URL="$PUBLIC_URL/blockchain/dependency-check"
-    #       PARAMS=""
-
-    #       echo 'before actual curl'
-    #       RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X POST -H "Content-Type: application/json" -d @deps_hashes.json "${BASE_URL}${PARAMS}")
-    #       echo 'after actual curl'
-
-
-    #       if [[ ${RESPONSE} -ge 400 ]]; then
-    #         echo "HTTP error occurred: ${RESPONSE}"
-    #         cat response.json
-    #         exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
-    #       fi
-
-    #       echo "Success: ${RESPONSE}"
-
-
-    # - name: Build with Gradle
-    #   run: |
-    #     echo "Starting the build process...."
-    #     ./gradlew build -x test
-    #     echo "Build process completed."
-
-
-    # - name: Test with Gradle
-    #   run: |
-    #     echo "Starting the testing process"
-    #     ./gradlew test
-    #     echo "Testing process done."
+    - name: Test with Gradle
+      run: |
+        echo "Starting the testing process"
+        ./gradlew test
+        echo "Testing process done."
 
 
     - name: Make HTTP GET request with curl - to esm, for deployment
