@@ -132,7 +132,7 @@ jobs:
           echo 'right after curl'
 
           if [[ ${RESPONSE} -ge 400 ]]; then
-            echo "HTTP error occurred:: ${RESPONSE}"
+            echo "HTTP error occurred: ${RESPONSE}"
             cat response.json
             exit 1  # Exit with a non-zero status to fail the CI/CD pipeline
           fi
